@@ -1,11 +1,11 @@
-name: Groq 120B Task - Sept 2026 Latest
+name: Groq 120B - FINAL WORKING
 on:
   workflow_dispatch:
     inputs:
       task:
         description: 'Kya banana hai?'
         required: true
-        default: 'Create a beautiful todo app with HTML CSS JS in folder my-todo-app'
+        default: 'Create a beautiful todo app with HTML CSS JS'
 
 jobs:
   run:
@@ -14,24 +14,21 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-
-      - name: Run OpenHands 1.15.0 with Groq 120B
+      - name: Run OpenHands
         run: |
-          docker run --rm --privileged -u root \
+          docker run --rm --privileged \
           -v /var/run/docker.sock:/var/run/docker.sock \
           -v $(pwd):/opt/workspace \
           -e WORKSPACE_MOUNT_PATH=/opt/workspace \
           -e LLM_MODEL=openai/gpt-oss-120b \
           -e LLM_BASE_URL=https://api.groq.com/openai/v1 \
           -e LLM_API_KEY=${{ secrets.LLM_API_KEY }} \
-          -e SANDBOX_RUNTIME_CONTAINER_IMAGE=ghcr.io/openhands/runtime:1.15.0 \
-          ghcr.io/openhands/openhands:1.15.0 \
+          ghcr.io/all-hands-ai/openhands:latest \
           python -m openhands.core.main --task "${{ inputs.task }}"
-
       - name: Push code
         run: |
           git config user.name "OpenHands"
-          git config user.email "openhands@github.com"
-          git add.
-          git commit -m "AI: ${{ inputs.task }}" || echo "no changes"
+          git config user.email "bot@openhands.dev"
+          git add .
+          git commit -m "AI: ${{ inputs.task }}" || true
           git push
