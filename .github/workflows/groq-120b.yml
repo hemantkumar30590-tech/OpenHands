@@ -1,0 +1,23 @@
+name: Groq 120B Task
+on:
+  workflow_dispatch:
+    inputs:
+      task:
+        description: 'Kya banana hai? (e.g. todo app banao)'
+        required: true
+        default: 'Create a beautiful todo app with HTML CSS JS in folder my-todo-app'
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          docker run --rm -v $(pwd):/opt/workspace -e SANDBOX_RUNTIME_CONTAINER_IMAGE=ghcr.io/all-hands-ai/runtime:latest -e LLM_MODEL=openai/gpt-oss-120b -e LLM_BASE_URL=https://api.groq.com/openai/v1 -e LLM_API_KEY=${{ secrets.LLM_API_KEY }} -e WORKSPACE_MOUNT_PATH=/opt/workspace ghcr.io/all-hands-ai/openhands:latest python -m openhands.core.main --task "${{ inputs.task }}"
+      - run: |
+          git config user.name "OpenHands"
+          git config user.email "openhands@github.com"
+          git add .
+          git commit -m "AI: ${{ inputs.task }}" || true
+          git push
