@@ -51,7 +51,6 @@ jobs:
           )
           out = resp.choices[0].message.content
           print(out[:2000])
-          # Parse files
           cur_path = None
           cur_buf = []
           for line in out.splitlines():
