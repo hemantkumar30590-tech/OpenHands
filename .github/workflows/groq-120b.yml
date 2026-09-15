@@ -1,4 +1,4 @@
-name: Groq 120B Task
+name: Groq 120B Task - Latest 2026
 on:
   workflow_dispatch:
     inputs:
@@ -14,22 +14,24 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - name: Run OpenHands with Groq
+
+      - name: Run OpenHands 1.15.0 with Groq 120B
         run: |
           docker run --rm --privileged -u root \
           -v /var/run/docker.sock:/var/run/docker.sock \
           -v $(pwd):/opt/workspace \
-          -e SANDBOX_RUNTIME_CONTAINER_IMAGE=ghcr.io/all-hands-ai/runtime:0.40 \
           -e WORKSPACE_MOUNT_PATH=/opt/workspace \
           -e LLM_MODEL=openai/gpt-oss-120b \
           -e LLM_BASE_URL=https://api.groq.com/openai/v1 \
           -e LLM_API_KEY=${{ secrets.LLM_API_KEY }} \
-          ghcr.io/all-hands-ai/openhands:0.40 \
+          -e SANDBOX_RUNTIME_CONTAINER_IMAGE=docker.all-hands.dev/all-hands-ai/runtime:1.15.0-nikolaik \
+          docker.all-hands.dev/all-hands-ai/openhands:1.15.0 \
           python -m openhands.core.main --task "${{ inputs.task }}"
+
       - name: Push code
         run: |
           git config user.name "OpenHands"
           git config user.email "openhands@github.com"
-          git add .
-          git commit -m "AI: ${{ inputs.task }}" || true
+          git add.
+          git commit -m "AI: ${{ inputs.task }}" || echo "no changes"
           git push
