@@ -6,7 +6,6 @@ on:
         description: 'Kya banana hai?'
         required: true
         default: 'Create a beautiful todo app with HTML CSS JS in folder my-todo-app'
-
 jobs:
   run:
     runs-on: ubuntu-latest
@@ -14,12 +13,10 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
       - name: Generate App with Groq 120B
         env:
           GROQ_KEY: ${{ secrets.LLM_API_KEY }}
@@ -31,42 +28,23 @@ jobs:
           from groq import Groq
           client = Groq(api_key=os.environ["GROQ_KEY"])
           task = os.environ["TASK"]
-          prompt = f"""
-          You are a coding assistant. {task}
-          Create 3 files: index.html, style.css, script.js inside folder my-todo-app
-          Return each file like:
-          ---FILE: my-todo-app/index.html---
-          <code>
-          ---FILE: my-todo-app/style.css---
-          <code>
-          ---FILE: my-todo-app/script.js---
-          <code>
-          Make it beautiful, working, modern UI.
-          """
-          resp = client.chat.completions.create(
-              model="openai/gpt-oss-120b",
-              messages=[{"role":"user","content":prompt}],
-              temperature=0.7,
-              max_tokens=8000
-          )
+          prompt = f"You are a coding assistant. {task}. Create files in my-todo-app folder. Return like ---FILE: my-todo-app/index.html--- code"
+          resp = client.chat.completions.create(model="openai/gpt-oss-120b", messages=[{"role":"user","content":prompt}], temperature=0.7, max_tokens=8000)
           out = resp.choices[0].message.content
-          print(out[:2000])
-          cur_path = None
-          cur_buf = []
+          cur_path=None; cur_buf=[]
           for line in out.splitlines():
               if line.startswith("---FILE:"):
                   if cur_path:
                       pathlib.Path(cur_path).parent.mkdir(parents=True, exist_ok=True)
                       pathlib.Path(cur_path).write_text("\n".join(cur_buf))
-                  cur_path = line.split("---FILE:")[1].split("---")[0].strip()
-                  cur_buf = []
+                  cur_path=line.split("---FILE:")[1].split("---")[0].strip()
+                  cur_buf=[]
               else:
                   cur_buf.append(line)
           if cur_path:
               pathlib.Path(cur_path).parent.mkdir(parents=True, exist_ok=True)
               pathlib.Path(cur_path).write_text("\n".join(cur_buf))
           PY
-
       - name: Push code
         run: |
           git config user.name "Groq Bot"
