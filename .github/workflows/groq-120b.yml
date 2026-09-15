@@ -13,9 +13,21 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - run: |
-          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd):/opt/workspace -e SANDBOX_RUNTIME_CONTAINER_IMAGE=ghcr.io/all-hands-ai/runtime:latest -e SANDBOX_USER_ID=$(id -u) -e WORKSPACE_MOUNT_PATH=/opt/workspace -e LLM_MODEL=openai/gpt-oss-120b -e LLM_BASE_URL=https://api.groq.com/openai/v1 -e LLM_API_KEY=${{ secrets.LLM_API_KEY }} ghcr.io/all-hands-ai/openhands:latest python -m openhands.core.main --task "${{ inputs.task }}"
-      - run: |
+      - name: Run OpenHands with Groq
+        run: |
+          docker run --rm --privileged \
+          -u root \
+          -v /var/run/docker.sock:/var/run/docker.sock \
+          -v $(pwd):/opt/workspace \
+          -e SANDBOX_RUNTIME_CONTAINER_IMAGE=ghcr.io/all-hands-ai/runtime:latest \
+          -e WORKSPACE_MOUNT_PATH=/opt/workspace \
+          -e LLM_MODEL=openai/gpt-oss-120b \
+          -e LLM_BASE_URL=https://api.groq.com/openai/v1 \
+          -e LLM_API_KEY=${{ secrets.LLM_API_KEY }} \
+          ghcr.io/all-hands-ai/openhands:latest \
+          python -m openhands.core.main --task "${{ inputs.task }}"
+      - name: Push code
+        run: |
           git config user.name "OpenHands"
           git config user.email "openhands@github.com"
           git add .
