@@ -1,0 +1,125 @@
+```css
+/* Reset & basic layout */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+html, body {
+    height: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f5f7fa;
+    color: #333;
+}
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Container */
+.container {
+    background: #fff;
+    width: 100%;
+    max-width: 420px;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 12px 24px rgba(0,0,0,.08);
+}
+
+/* Header */
+h1 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-weight: 300;
+}
+
+/* Form */
+#todo-form {
+    display: flex;
+    gap: .5rem;
+    margin-bottom: 1rem;
+}
+#todo-form input {
+    flex: 1;
+    padding: .75rem 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color .2s;
+}
+#todo-form input:focus {
+    outline: none;
+    border-color: #5c9ded;
+}
+#todo-form button {
+    padding: .75rem 1.2rem;
+    background: #5c9ded;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background .2s;
+}
+#todo-form button:hover {
+    background: #4a8ad4;
+}
+
+/* Todo list */
+#todo-list {
+    list-style: none;
+    max-height: 300px;
+    overflow-y: auto;
+}
+.todo-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: .75rem 1rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+.todo-item:last-child { border-bottom: none; }
+
+.todo-text {
+    flex: 1;
+    margin-left: .5rem;
+    word-break: break-word;
+}
+.todo-text.completed {
+    text-decoration: line-through;
+    color: #999;
+}
+
+/* Buttons inside each item */
+.todo-actions button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    margin-left: .5rem;
+    font-size: 1.1rem;
+    color: #777;
+    transition: color .2s;
+}
+.todo-actions button:hover {
+    color: #333;
+}
+
+/* Footer */
+footer {
+    margin-top: 1rem;
+    text-align: right;
+}
+#clear-completed {
+    background: none;
+    border: none;
+    color: #5c9ded;
+    cursor: pointer;
+    font-weight: 600;
+}
+#clear-completed:hover {
+    text-decoration: underline;
+}
+```
