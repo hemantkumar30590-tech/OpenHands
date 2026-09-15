@@ -1,26 +1,21 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>My Todo App</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>My Todo App</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <main class="container">
-        <h1>🗒️ My Todo List</h1>
+  <h1>Todo List</h1>
+  <form id="todo-form">
+    <input type="text" id="new-todo" placeholder="What needs to be done?" required />
+    <button type="submit">Add</button>
+  </form>
 
-        <form id="todo-form" autocomplete="off">
-            <input type="text" id="new-todo" placeholder="What needs to be done?" required />
-            <button type="submit">Add</button>
-        </form>
+  <ul id="todo-list"></ul>
 
-        <ul id="todo-list"></ul>
-
-        <footer>
-            <button id="clear-completed">Clear Completed</button>
-        </footer>
-    </main>
-
-    <script src="script.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
+```
