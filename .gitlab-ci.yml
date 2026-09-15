@@ -1,0 +1,19 @@
+stages:
+    - run
+
+OpenHands-Groq-120B:
+  stage: run
+  image: docker:20.10
+  services:
+        - docker:20.10-dind
+  variables:
+    DOCKER_HOST: tcp://docker:2376
+    DOCKER_TLS_CERTDIR: "/certs"
+  script:
+        - echo "Starting OpenHands with Groq gpt-oss-120B..."
+        - docker pull ghcr.io/all-hands-ai/openhands:latest
+        - echo "Image OK, now starting server..."
+        - docker run --rm -e LLM_MODEL=openai/gpt-oss-120b -e LLM_BASE_URL=https://api.groq.com/openai/v1 -e LLM_API_KEY=$LLM_API_KEY ghcr.io/all-hands-ai/openhands:latest
+  rules:
+        - when: manual
+  timeout: 1h
