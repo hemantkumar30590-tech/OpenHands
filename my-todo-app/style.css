@@ -1,50 +1,85 @@
 ```css
+* {
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
 body {
-  font-family: Arial, Helvetica, sans-serif;
-  max-width: 600px;
-  margin: 2rem auto;
-  padding: 0 1rem;
-  line-height: 1.5;
+    background: #f0f2f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
 }
 
-h1 {
-  text-align: center;
+.calculator {
+    background: #222;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0,0,0,.3);
+    width: 350px;
 }
 
-#todo-form {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+#display {
+    width: 100%;
+    height: 50px;
+    font-size: 1.8rem;
+    text-align: right;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 6px;
+    background: #111;
+    color: #fff;
 }
 
-#new-todo {
-  flex: 1;
-  padding: 0.5rem;
-  font-size: 1rem;
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 6px;
 }
 
 button {
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  cursor: pointer;
+    background: #444;
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 1rem;
+    padding: 12px;
+    cursor: pointer;
+    transition: background .2s;
 }
 
-ul {
-  list-style: none;
-  padding: 0;
+button:hover {
+    background: #555;
 }
 
-li {
-  background: #f9f9f9;
-  margin-bottom: 0.5rem;
-  padding: 0.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+button.op {
+    background: #ff9500;
+    color: #fff;
 }
 
-li.completed {
-  text-decoration: line-through;
-  color: #777;
+button.op:hover {
+    background: #ffb347;
+}
+
+button.equals {
+    grid-column: span 2;
+    background: #34c759;
+    color: #fff;
+    font-weight: bold;
+}
+
+button.equals:hover {
+    background: #5ddc85;
+}
+
+button.func {
+    background: #3a86ff;
+}
+
+button.func:hover {
+    background: #5c9eff;
 }
 ```
