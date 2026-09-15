@@ -16,10 +16,11 @@ jobs:
       - uses: actions/checkout@v4
       - name: Run OpenHands
         run: |
-          docker run --rm --privileged \
+          docker run --rm --privileged --network=host \
           -v /var/run/docker.sock:/var/run/docker.sock \
           -v $(pwd):/opt/workspace \
           -e WORKSPACE_MOUNT_PATH=/opt/workspace \
+          -e SANDBOX_RUNTIME_CONTAINER_IMAGE=ghcr.io/all-hands-ai/runtime:latest \
           -e LLM_MODEL=openai/gpt-oss-120b \
           -e LLM_BASE_URL=https://api.groq.com/openai/v1 \
           -e LLM_API_KEY=${{ secrets.LLM_API_KEY }} \
