@@ -49,6 +49,6 @@ jobs:
         run: |
           git config user.name "Groq Bot"
           git config user.email "groq@bot.com"
-          git add.
+          git add .
           git commit -m "AI: ${{ inputs.task }}" || true
           git push
