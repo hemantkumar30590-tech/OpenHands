@@ -1,0 +1,18 @@
+stages:
+    - run
+
+OpenHands-Mobile:
+  stage: run
+  image: docker:20.10
+  services:
+        - docker:20.10-dind
+  variables:
+    DOCKER_HOST: tcp://docker:2376
+    DOCKER_TLS_CERTDIR: "/certs"
+  script:
+        - echo "OpenHands image download ho rahi hai..."
+        - docker pull ghcr.io/all-hands-ai/openhands:latest
+        - echo "Image successfully downloaded! OpenHands ready hai."
+        - docker run --rm --entrypoint /bin/bash ghcr.io/all-hands-ai/openhands:latest -c "ls /app && echo 'OpenHands Mobile Ready'"
+  rules:
+        - when: manual
