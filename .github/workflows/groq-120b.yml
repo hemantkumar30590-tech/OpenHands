@@ -1,11 +1,11 @@
-name: Groq 120B - FINAL WORKING
+name: Groq 120B - DIRECT WORKING
 on:
   workflow_dispatch:
     inputs:
       task:
         description: 'Kya banana hai?'
         required: true
-        default: 'Create a beautiful todo app with HTML CSS JS'
+        default: 'Create a beautiful todo app with HTML CSS JS in folder my-todo-app'
 
 jobs:
   run:
@@ -14,22 +14,64 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - name: Run OpenHands
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Generate App with Groq 120B
+        env:
+          GROQ_KEY: ${{ secrets.LLM_API_KEY }}
+          TASK: ${{ inputs.task }}
         run: |
-          docker run --rm --privileged --network=host \
-          -v /var/run/docker.sock:/var/run/docker.sock \
-          -v $(pwd):/opt/workspace \
-          -e WORKSPACE_MOUNT_PATH=/opt/workspace \
-          -e SANDBOX_RUNTIME_CONTAINER_IMAGE=ghcr.io/all-hands-ai/runtime:latest \
-          -e LLM_MODEL=openai/gpt-oss-120b \
-          -e LLM_BASE_URL=https://api.groq.com/openai/v1 \
-          -e LLM_API_KEY=${{ secrets.LLM_API_KEY }} \
-          ghcr.io/all-hands-ai/openhands:latest \
-          python -m openhands.core.main --task "${{ inputs.task }}"
+          pip install groq
+          python << 'PY'
+          import os, pathlib
+          from groq import Groq
+          client = Groq(api_key=os.environ["GROQ_KEY"])
+          task = os.environ["TASK"]
+          prompt = f"""
+          You are a coding assistant. {task}
+          Create 3 files: index.html, style.css, script.js inside folder my-todo-app
+          Return each file like:
+          ---FILE: my-todo-app/index.html---
+          <code>
+          ---FILE: my-todo-app/style.css---
+          <code>
+          ---FILE: my-todo-app/script.js---
+          <code>
+          Make it beautiful, working, modern UI.
+          """
+          resp = client.chat.completions.create(
+              model="openai/gpt-oss-120b",
+              messages=[{"role":"user","content":prompt}],
+              temperature=0.7,
+              max_tokens=8000
+          )
+          out = resp.choices[0].message.content
+          print(out[:2000])
+          # Parse files
+          cur_path = None
+          cur_buf = []
+          for line in out.splitlines():
+              if line.startswith("---FILE:"):
+                  if cur_path:
+                      pathlib.Path(cur_path).parent.mkdir(parents=True, exist_ok=True)
+                      pathlib.Path(cur_path).write_text("\n".join(cur_buf))
+                  cur_path = line.split("---FILE:")[1].split("---")[0].strip()
+                  cur_buf = []
+              else:
+                  cur_buf.append(line)
+          if cur_path:
+              pathlib.Path(cur_path).parent.mkdir(parents=True, exist_ok=True)
+              pathlib.Path(cur_path).write_text("\n".join(cur_buf))
+          PY
+
       - name: Push code
         run: |
-          git config user.name "OpenHands"
-          git config user.email "bot@openhands.dev"
-          git add .
+          git config user.name "Groq Bot"
+          git config user.email "groq@bot.com"
+          git add.
           git commit -m "AI: ${{ inputs.task }}" || true
           git push
