@@ -1,0 +1,105 @@
+```css
+/* ==== CSS Variables (Theme) ==== */
+:root {
+  --bg-primary: #1e1e2f;
+  --bg-secondary: #27293d;
+  --text-primary: #e0e0e0;
+  --accent: #ff9800;
+  --accent-dark: #e68900;
+  --danger: #ff5252;
+}
+
+/* ==== Global Reset ==== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html { font-size: 16px; }
+body {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--bg-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--text-primary);
+}
+
+/* ==== Calculator Layout ==== */
+.calculator {
+  width: 100%;
+  max-width: 420px;
+  background: var(--bg-secondary);
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0,0,0,.4);
+}
+
+/* ---- Display ---- */
+.display {
+  background: var(--bg-primary);
+  padding: 1rem;
+  text-align: right;
+}
+.expression {
+  font-size: 0.9rem;
+  min-height: 1.2rem;
+  opacity: .7;
+  word-break: break-all;
+}
+.result {
+  font-size: 2.2rem;
+  font-weight: 300;
+  word-break: break-all;
+}
+
+/* ---- Buttons Grid ---- */
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+button {
+  border: none;
+  background: transparent;
+  font-size: 1.4rem;
+  padding: 1.2rem;
+  cursor: pointer;
+  transition: background .15s, color .15s;
+}
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+/* ---- Button Types ---- */
+.btn.num { background: var(--bg-primary); }
+.btn.op,
+.btn.func,
+.btn.eq { background: var(--bg-secondary); }
+
+.btn.num:hover,
+.btn.op:hover,
+.btn.func:hover,
+.btn.eq:hover { background: rgba(255,255,255,.08); }
+
+.btn.eq {
+  background: var(--accent);
+  color: #fff;
+  grid-column: span 2;
+}
+.btn.eq:hover { background: var(--accent-dark); }
+
+.btn.func[data-action="clear"] { color: var(--danger); }
+.btn.func[data-action="delete"] { color: var(--danger); }
+
+.zero { grid-column: span 2; }
+
+/* ==== Responsive ==== */
+@media (max-width: 480px) {
+  .result { font-size: 1.8rem; }
+  button { font-size: 1.2rem; padding: .9rem; }
+}
+```

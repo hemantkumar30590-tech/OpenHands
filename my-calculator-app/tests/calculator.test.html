@@ -1,0 +1,121 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Calculator TDD Tests</title>
+  <style>
+    body {font-family: sans-serif; padding: 1rem;}
+    .pass {color: green;}
+    .fail {color: red;}
+  </style>
+</head>
+<body>
+  <h1>Calculator Tests</h1>
+  <pre id="log"></pre>
+
+  <script src="../script.js"></script>
+  <script>
+    // ----- Simple Assertion Helper -----
+    const log = document.getElementById('log');
+    function assert(condition, message) {
+      const line = document.createElement('div');
+      line.textContent = (condition ? '✔️ PASS: ' : '❌ FAIL: ') + message;
+      line.className = condition ? 'pass' : 'fail';
+      log.appendChild(line);
+    }
+
+    // ----- Test Suite -----
+    (function runTests() {
+      const dummyExpr = document.createElement('div');
+      const dummyRes = document.createElement('div');
+      const calc = new Calculator(dummyExpr, dummyRes);
+
+      // 1. Initial state
+      assert(calc.current === '' && calc.prev === '' && calc.operator === null,
+        'Calculator starts empty');
+
+      // 2. Digit entry
+      calc.appendDigit('7');
+      assert(calc.current === '7', 'Digit 7 appended');
+
+      // 3. Decimal handling
+      calc.appendDigit('.');
+      calc.appendDigit('5');
+      assert(calc.current === '7.5', 'Decimal number built correctly');
+
+      // 4. Prevent double decimal
+      calc.appendDigit('.');
+      assert(calc.current === '7.5', 'Second decimal ignored');
+
+      // 5. Operator selection
+      calc.chooseOperator('+');
+      assert(calc.operator === '+' && calc.prev === '7.5' && calc.current === '',
+        'Operator + stored, current cleared');
+
+      // 6. Second operand
+      calc.appendDigit('2');
+      calc.appendDigit('.');
+      calc.appendDigit('5');
+      assert(calc.current === '2.5', 'Second operand entered');
+
+      // 7. Computation
+      calc.compute();
+      assert(calc.current === '10', '7.5 + 2.5 = 10');
+
+      // 8. Chain operations (10 - 3)
+      calc.chooseOperator('-');
+      calc.appendDigit('3');
+      calc.compute();
+      assert(calc.current === '7', '10 - 3 = 7');
+
+      // 9. Division by zero
+      calc.chooseOperator('/');
+      calc.appendDigit('0');
+      calc.compute();
+      assert(calc.current === 'Error', 'Division by zero yields Error');
+
+      // 10. Clear & Delete
+      calc.clearAll();
+      assert(calc.current === '' && calc.prev === '' && calc.operator === null,
+        'Clear resets state');
+      calc.appendDigit('9');
+      calc.appendDigit('8');
+      calc.deleteLast();
+      assert(calc.current === '9', 'Delete removes last digit');
+
+      // 11. Percent operator (10 % 3 = 1)
+      calc.clearAll();
+      calc.appendDigit('1');
+      calc.appendDigit('0');
+      calc.chooseOperator('%');
+      calc.appendDigit('3');
+      calc.compute();
+      assert(calc.current === '1', '10 % 3 = 1');
+
+      // 12. Keyboard shortcut simulation (optional)
+      // Not needed for core logic tests.
+
+      // Summary
+      const total = log.children.length;
+      const passed = [...log.children].filter(c => c.classList.contains('pass')).length;
+      const summary = document.createElement('h2');
+      summary.textContent = `🧪 ${passed}/${total} tests passed`;
+      document.body.insertBefore(summary, log);
+    })();
+  </script>
+</body>
+</html>
+```
+
+---
+
+### 📦 How to use
+
+1. **Create the folder** `my-calculator-app` in your repo.  
+2. Add the four files exactly as shown above.  
+3. Commit & push to the `main` branch.  
+4. Open `index.html` in a browser – you’ll see a sleek, responsive calculator.  
+5. To verify the TDD suite, open `tests/calculator.test.html`; all tests should pass (green check‑marks).  
+
+Enjoy your new calculator! 🎉
